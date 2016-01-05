@@ -5,6 +5,7 @@
  */
 package textmining;
 
+<<<<<<< HEAD
 import weka.core.Instances;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -17,6 +18,15 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.rules.DecisionTable;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
+=======
+import weka.classifiers.Classifier;
+import weka.classifiers.Evaluation;
+import weka.classifiers.bayes.NaiveBayes;
+import weka.core.Attribute;
+import weka.core.FastVector;
+import weka.core.Instance;
+import weka.core.Instances;
+>>>>>>> d2a0ba70fd45feac1d869fc7e484ea10d9efd6fe
 
 /**
  *
@@ -26,7 +36,9 @@ public class TextMining {
 
     /**
      * @param args the command line arguments
+     * @throws java.lang.Exception
      */
+
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
         BufferedReader reader = new BufferedReader(new FileReader("C:/wamp/www/AllocineHelper/arff/20160104.arff"));
         Instances data = new Instances(reader);
@@ -50,5 +62,4 @@ public class TextMining {
         System.out.println(matrique);
 
     }
-
 }
