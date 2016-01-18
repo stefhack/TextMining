@@ -48,7 +48,7 @@ public class TextMining {
         Evaluation eval = new Evaluation(dataFiltered);
         eval.evaluateModel(decisionTable, dataFiltered);
         String resume = eval.toSummaryString();
-        String matrique = eval.toMatrixString(resume);
+        String matrique = eval.toMatrixString();
         System.out.println(resume);
         System.out.println(matrique);
 
