@@ -5,18 +5,21 @@
  */
 package textmining;
 
-import java.io.BufferedReader;
 import weka.core.Instances;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import weka.classifiers.Classifier;
 import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
+import weka.classifiers.functions.LeastMedSq;
 import weka.classifiers.functions.LinearRegression;
+import weka.classifiers.functions.SMOreg;
 import weka.classifiers.rules.DecisionTable;
+import weka.classifiers.rules.OneR;
+import weka.classifiers.trees.J48;
 import weka.core.Debug.Random;
-import weka.core.Instance;
 
 /**
  *
@@ -36,75 +39,84 @@ public class TextMining {
 
 //        System.out.println("File selected : "+arff);
         /*OPTIONS*/
-        String arff = "C:/wamp/www/AllocineHelper/arff/50_com_plus_cat.json17_09_34.arff";
-        // String arff = "/Users/Mathieu/NetBeansProjects/AllocineHelper/arff/20160104.arff";
-        boolean showRegression = Boolean.valueOf("true");
-        int nb_folds = 5;
-        boolean setIDF = true;
-        boolean setTF = true;
-        String stemmer = "NullStemmer";
+//        String arff = "C:/wamp/www/AllocineHelper/arff/reviews_Theo.arff";
+//        // String arff = "/Users/Mathieu/NetBeansProjects/AllocineHelper/arff/20160104.arff";
+//        boolean showRegression = Boolean.valueOf("true");
+//        int nb_folds = 5;
+//        boolean setIDF = true;
+//        boolean setTF = true;
+//        String stemmer = "NullStemmer";
+//        String tokenizer = "Word";
 
-//        String arff = args[0];
-//        boolean showRegression = Boolean.valueOf(args[1]);
-//        int nb_folds = Integer.valueOf(args[2]);
-//        boolean setIDF = Boolean.valueOf(args[3]);
-//        boolean setTF = Boolean.valueOf(args[4]);
-//         String stemmer = args[5];
+        String arff = args[0];
+        boolean showRegression = Boolean.valueOf(args[1]);
+        int nb_folds = Integer.valueOf(args[2]);
+        boolean setIDF = Boolean.valueOf(args[3]);
+        boolean setTF = Boolean.valueOf(args[4]);
+         String stemmer = args[5];
+String tokenizer = args[6];
         String stopWords = "C:/wamp/www/AllocineHelper/stopwords_fr.txt";
 ////        String stopWords = "/Users/Mathieu/NetBeansProjects/AllocineHelper/stopwords_fr.txt";        
 
-//        TestAlgo test1 = new TestAlgo(arff);
-//        test1.setStop_words_path_file(stopWords);
-//        try {
-//            test1.buildData(setIDF, setTF, 1, stemmer);//IDF=>true/false , TF=>true/false , Classe 1 => Commentaires
-//        } catch (Exception ex) {
-//            System.out.println("Fichier inconnu");
-//        }
-//        System.out.println("*************CLASSIFICATION********************");
-//        System.out.println("DECISION TABLE");
-//        Classifier decisionTable = (Classifier) new DecisionTable();
-//        test1.setAlgo(decisionTable);
-//        String[] options = weka.core.Utils.splitOptions("-X 1 -S \"weka.attributeSelection.BestFirst -D 1 -N 5\"");
-//        System.out.println(test1.evaluate(options, nb_folds));
-//
-//        System.out.println("NAIVE BAYES");
-//        Classifier naiveBayes = (Classifier) new NaiveBayes();
-//        test1.setAlgo(naiveBayes);
-//        System.out.println(test1.evaluate(weka.core.Utils.splitOptions(""), nb_folds));
-//
-//        System.out.println("J 48");
-//        Classifier j48 = new J48();
-//        test1.setAlgo(j48);
-//        System.out.println(test1.evaluate(weka.core.Utils.splitOptions(""), nb_folds));
-//
-//        System.out.println("ONE R");
-//        Classifier oneR = new OneR();
-//
-//        test1.setAlgo(oneR);
-//        System.out.println(test1.evaluate(weka.core.Utils.splitOptions(""), nb_folds));
-//
-////        System.out.println("And the winner is : " + test1.getBestAlgo());
-//        if (showRegression) {
-//            
-//            HashMap<String,Classifier> regressionClassifiers = new HashMap<String, Classifier>();
-//            
-//            regressionClassifiers.put("LinearRegression",(Classifier)new LinearRegression());
-//            regressionClassifiers.put("SMO Reg",(Classifier)new SMOreg());
-//            regressionClassifiers.put("LeastMedSq",new LeastMedSq());
-//            System.out.println("***********************REGRESSION****************************");
-//            
-//            for (Map.Entry<String, Classifier> entry : regressionClassifiers.entrySet()) {
-//                System.out.println("Algo : "+ entry.getKey());
-//                Classifier algo = entry.getValue();
-//                 test1.setAlgo(algo);
-//                test1.buildData(setIDF, setTF, 0, stemmer);
-//                options = weka.core.Utils.splitOptions("");
-//                System.out.println(test1.evaluateRegression(options, nb_folds));
-//System.out.println(algo);
-//            }
-//          
-//
-//        }
+        TestAlgo test1 = new TestAlgo(arff);
+        test1.setStop_words_path_file(stopWords);
+        try {
+            test1.buildData(setIDF, setTF, 1, stemmer,tokenizer);//IDF=>true/false , TF=>true/false , Classe 1 => Commentaires
+        } catch (Exception ex) {
+            System.out.println("Fichier inconnu");
+        }
+        System.out.println("*************CLASSIFICATION********************");
+        System.out.println("-------OPTIONS--------");
+        System.out.println("IDF : "+String.valueOf(setIDF));
+        System.out.println("TF : "+String.valueOf(setTF));
+        System.out.println("Nb Folds for Cross Validation : "+nb_folds);
+        System.out.println("Stemmer : "+stemmer);
+        System.out.println("Tokenizer : "+tokenizer);
+        System.out.println("-----------------------");
+        System.out.println("DECISION TABLE");
+        Classifier decisionTable = (Classifier) new DecisionTable();
+        test1.setAlgo(decisionTable);
+        String[] options = weka.core.Utils.splitOptions("-X 1 -S \"weka.attributeSelection.BestFirst -D 1 -N 5\"");
+        System.out.println(test1.evaluate(options, nb_folds));
+
+        System.out.println("NAIVE BAYES");
+        Classifier naiveBayes = (Classifier) new NaiveBayes();
+        test1.setAlgo(naiveBayes);
+        System.out.println(test1.evaluate(weka.core.Utils.splitOptions(""), nb_folds));
+
+        System.out.println("J 48");
+        Classifier j48 = new J48();
+        test1.setAlgo(j48);
+        System.out.println(test1.evaluate(weka.core.Utils.splitOptions(""), nb_folds));
+
+        System.out.println("ONE R");
+        Classifier oneR = new OneR();
+
+        test1.setAlgo(oneR);
+        System.out.println(test1.evaluate(weka.core.Utils.splitOptions(""), nb_folds));
+
+//        System.out.println("And the winner is : " + test1.getBestAlgo());
+        if (showRegression) {
+            
+            HashMap<String,Classifier> regressionClassifiers = new HashMap<String, Classifier>();
+            
+            regressionClassifiers.put("LinearRegression",(Classifier)new LinearRegression());
+            regressionClassifiers.put("SMO Reg",(Classifier)new SMOreg());
+            regressionClassifiers.put("LeastMedSq",new LeastMedSq());
+            System.out.println("***********************REGRESSION****************************");
+            
+            for (Map.Entry<String, Classifier> entry : regressionClassifiers.entrySet()) {
+                System.out.println("Algo : "+ entry.getKey());
+                Classifier algo = entry.getValue();
+                 test1.setAlgo(algo);
+                test1.buildData(setIDF, setTF, 0, stemmer,tokenizer);
+                options = weka.core.Utils.splitOptions("");
+                System.out.println(test1.evaluateRegression(options, nb_folds));
+System.out.println(algo);
+            }
+          
+
+        }
         
         //Tests predictions
 //        TestAlgo prediction = new TestAlgo(arff);
@@ -117,19 +129,19 @@ public class TextMining {
 //          prediction.evaluateRegression(options, nb_folds);
 //         weka.core.SerializationHelper.write("linear_reg.model", algo);
 
-            Instances data;
-            LinearRegression LR = (LinearRegression)weka.core.SerializationHelper.read("linear_reg.model");
-            
-            try (BufferedReader reader = new BufferedReader(new FileReader("C:/wamp/www/AllocineHelper/arff/supplied_test.arff"))) {
-            data = new Instances(reader);
-        }
-            data.setClassIndex(0);
-         double actualValue = data.instance(0).classValue();
-             System.out.println(actualValue);
-            Instance newInst = data.instance(0);
-            
-            double predAlgo = LR.classifyInstance(newInst);
-             System.out.println(actualValue + "  => "+predAlgo);
+//            Instances data;
+//            LinearRegression LR = (LinearRegression)weka.core.SerializationHelper.read("linear_reg.model");
+//            
+//            try (BufferedReader reader = new BufferedReader(new FileReader("C:/wamp/www/AllocineHelper/arff/supplied_test.arff"))) {
+//            data = new Instances(reader);
+//        }
+//            data.setClassIndex(0);
+//         double actualValue = data.instance(0).classValue();
+//             System.out.println(actualValue);
+//            Instance newInst = data.instance(0);
+//            
+//            double predAlgo = LR.classifyInstance(newInst);
+//             System.out.println(actualValue + "  => "+predAlgo);
           
 
 //         for (int i = 0; i < data.numInstances(); i++) {

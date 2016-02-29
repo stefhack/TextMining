@@ -22,6 +22,10 @@ import weka.core.stemmers.LovinsStemmer;
 import weka.core.stemmers.NullStemmer;
 import weka.core.stemmers.SnowballStemmer;
 import weka.core.stemmers.Stemmer;
+import weka.core.tokenizers.AlphabeticTokenizer;
+import weka.core.tokenizers.NGramTokenizer;
+import weka.core.tokenizers.Tokenizer;
+import weka.core.tokenizers.WordTokenizer;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 
@@ -52,12 +56,13 @@ public class TestAlgo {
      * @throws IOException
      * @throws Exception 
      */
-    public void buildData(boolean IDF, boolean TF, int numClass,String stemmer) throws IOException, Exception {
+    public void buildData(boolean IDF, boolean TF, int numClass,String stemmer,String tokenizer) throws IOException, Exception {
 
         try (BufferedReader reader = new BufferedReader(new FileReader(this.arff_file_path))) {
             this.data = new Instances(reader);
         }
         StringToWordVector wordVector = new StringToWordVector();
+        wordVector.setTokenizer(getTokenizer(tokenizer));
         wordVector.setInputFormat(this.data);
         wordVector.setStopwords(new File(stop_words_path_file));
         wordVector.setTFTransform(TF);
@@ -66,6 +71,18 @@ public class TestAlgo {
         wordVector.setWordsToKeep(10000);
         this.data = Filter.useFilter(data, wordVector);
         this.data.setClassIndex(numClass);
+    }
+    
+    
+    private Tokenizer getTokenizer(String type){
+        Tokenizer tokenizer = null;
+        switch(type){
+            case  "Alphabetical" : tokenizer = new AlphabeticTokenizer();break;
+            case "NGram" : tokenizer = new NGramTokenizer();break;
+            case "Word" : tokenizer = new WordTokenizer();break;
+        }
+        
+        return tokenizer;
     }
     
     /**
